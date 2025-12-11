@@ -1,26 +1,25 @@
 # 全体
-all ::= (while_stmt | if_stmt | declare | assign | ) "\n" all | ;
+all ::= (while_stmt | if_stmt | declare_stmt | assign_stmt) ";" all | ;
 
 # 繰り返し
 while_stmt ::= "while" boolean_expr "{" all "}";
 
 # 条件分岐
-if_stmt ::= "if" boolean_expr "{" all "}" else_stmt;
+if_stmt ::= "if" boolean_expr "{" all "}" (else_stmt | );
 else_stmt ::= "else" ("{" all "}" | if_stmt);
 
 # 変数
-declare ::= "let" ("num" | "bool") id ;
-assign ::= id "=" ( boolean_expr | num_expr ) ;
-id ::= [a-zA-Z0-9_]* ;
+declare_stmt ::= "let" ("num" | "bool") id;
+assign_stmt ::= id "=" ( boolean_expr | num_expr );
+id ::= [a-zA-Z_][a-zA-Z0-9_]*;
 
 # 論理式
 
-boolean_expr ::= boolean (boolean_bin | ) | num_comp | boolean_un;
+boolean_expr ::= boolean (boolean_calc | ) | num_comp | boolean_not; # LL(1)を満たさない
 
-boolean_un ::= "not" boolean_expr;
+boolean_not ::= "not" boolean_expr;
 
-boolean_bin ::= boolean_op boolean_expr;
-boolean_op ::= "and" | "or" | "xor" ;
+boolean_calc ::= ("and" | "or") boolean_expr;
 
 boolean ::= "true" | "false" | "(" boolean_expr ")" | id;
 
